@@ -1,0 +1,10 @@
+.vscode/
+.DS_Store/
+
+__pycache__/
+*.py[cod]
+*.pyo
+
+.pytest_cache/
+.coverage
+htmlcov/
