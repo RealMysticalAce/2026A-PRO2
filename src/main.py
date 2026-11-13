@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 
-from .donnees import charger_donnees
+from .donnees import JeuDonnees
 
-donnees = charger_donnees("donnees/pokemon.csv")
+donnees = JeuDonnees("donnees/pokemon.csv").donnees
 plt.bar(["Non-légendaire", "Légendaire"], donnees["Legendary"].value_counts().values)
 plt.title("Nombre de Pokémon légendaires vs non légendaires")
 plt.xlabel("Légendaire")
