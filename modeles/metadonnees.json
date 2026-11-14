@@ -1,0 +1,91 @@
+{
+    "cible": "Legendary",
+    "colonnes_numeriques": [
+        "HP",
+        "Attack",
+        "Defense",
+        "Sp. Atk",
+        "Sp. Def",
+        "Speed",
+        "Generation"
+    ],
+    "colonnes_categorielles": [
+        "Type 1",
+        "Type 2"
+    ],
+    "valeurs_categorielles": {
+        "Type 1": [
+            "Bug",
+            "Dark",
+            "Dragon",
+            "Electric",
+            "Fairy",
+            "Fighting",
+            "Fire",
+            "Flying",
+            "Ghost",
+            "Grass",
+            "Ground",
+            "Ice",
+            "Normal",
+            "Poison",
+            "Psychic",
+            "Rock",
+            "Steel",
+            "Water"
+        ],
+        "Type 2": [
+            "Aucun",
+            "Bug",
+            "Dark",
+            "Dragon",
+            "Electric",
+            "Fairy",
+            "Fighting",
+            "Fire",
+            "Flying",
+            "Ghost",
+            "Grass",
+            "Ground",
+            "Ice",
+            "Normal",
+            "Poison",
+            "Psychic",
+            "Rock",
+            "Steel",
+            "Water"
+        ]
+    },
+    "intervalles_numeriques": {
+        "HP": {
+            "minimum": 1.0,
+            "maximum": 255.0
+        },
+        "Attack": {
+            "minimum": 5.0,
+            "maximum": 190.0
+        },
+        "Defense": {
+            "minimum": 5.0,
+            "maximum": 230.0
+        },
+        "Sp. Atk": {
+            "minimum": 10.0,
+            "maximum": 194.0
+        },
+        "Sp. Def": {
+            "minimum": 20.0,
+            "maximum": 230.0
+        },
+        "Speed": {
+            "minimum": 5.0,
+            "maximum": 180.0
+        },
+        "Generation": {
+            "minimum": 1.0,
+            "maximum": 6.0
+        }
+    },
+    "f1_modele": 0.5294117647058824,
+    "f1_reference": 0.0
+}
