@@ -21,7 +21,10 @@ def main() -> int:
         if not os.path.isfile(chemin_metadonnees):
             raise FichierIntrouvableError(f"Métadonnées introuvables : {chemin_metadonnees}")
         modele = jb.load(chemin_modele)
-        metadonnees = json.load(open(chemin_metadonnees, "r", encoding="utf-8"))
+        
+        with open(chemin_metadonnees, encoding="utf-8") as fichier:
+            metadonnees = json.load(fichier)
+            
     except FichierIntrouvableError as e:
         print(f"Fichier requis absent : {e}")
         return 1
