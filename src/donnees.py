@@ -59,12 +59,14 @@ def nettoyer_donnees(donnees: pd.DataFrame) -> pd.DataFrame:
         raise DonneeInvalideError(f"Colonnes requises manquantes : {colonnes_manquantes}")
 
     for colonne in COLONNES_CATEGORIELLES:
-        try:
-            donnees[colonne] = donnees[colonne].fillna("Aucun")
-            donnees[colonne] = donnees[colonne].replace("", "Aucun")
-            donnees[colonne] = donnees[colonne].astype(str).str.strip()
-        except ValueError:
-            raise DonneeInvalideError(f"Valeur inatendue dans la colonne catégorielle : {colonne}")
+        valeurs = (donnees[colonne].astype("string").str.strip().replace("", pd.NA))
+
+        if colonne == "Type 2":
+            valeurs = valeurs.fillna("Aucun")
+        elif valeurs.isna().any() or valeurs.eq("Aucun").any():
+            raise DonneeInvalideError("Chaque Pokémon doit avoir un type principal.")
+
+        donnees[colonne] = valeurs.astype(str)
     
     for colonne in COLONNES_NUMERIQUES:
         try:
