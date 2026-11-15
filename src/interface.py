@@ -23,7 +23,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 
 from .modele import Modele
-from .donnees import COLONNES_REQUISES
+from .donnees import COLONNES_CARACTERISTIQUES
 from .exceptions import (DonneeInvalideError, HistoriqueErreur, ModeleIndisponibleError)
 
 
@@ -120,7 +120,7 @@ class Fenetre(QWidget):
                 lecteur = csv.DictReader(fichier)
                 if lecteur.fieldnames is None:
                     raise HistoriqueErreur("Le fichier d'historique est vide ou n'a pas d'en-têtes.")
-                for nom in COLONNES_REQUISES:
+                for nom in COLONNES_CARACTERISTIQUES + ["prediction_legendaire", "proba_non_legendaire", "proba_legendaire", "date_heure"]:
                     if nom not in lecteur.fieldnames:
                         raise HistoriqueErreur(f"Le fichier d'historique est invalide : la colonne '{nom}' est manquante.")
                 
