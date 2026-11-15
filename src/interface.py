@@ -132,7 +132,12 @@ class Fenetre(QWidget):
                     
                     est_legendaire = (statut == "true")
                     resultat = "Légendaire" if est_legendaire else "Non légendaire"
-                    pourcentage = float(ligne["proba_legendaire"])
+                    cle_probabilite = (
+                        "proba_legendaire"
+                        if est_legendaire
+                        else "proba_non_legendaire"
+                    )
+                    pourcentage = float(ligne[cle_probabilite])
 
                     texte = (f"{ligne['date_heure']} : {resultat} ({pourcentage:.1%} estimé)")
 
