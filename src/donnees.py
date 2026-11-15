@@ -77,6 +77,8 @@ def nettoyer_donnees(donnees: pd.DataFrame) -> pd.DataFrame:
     try:
         cible = donnees["Legendary"].astype("string").str.lower().str.strip()
         donnees["Legendary"] = cible.map({"true": True, "false": False})
+        if donnees["Legendary"].isna().any():
+            raise DonneeInvalideError("Legendary doit contenir uniquement True ou False.")
     except KeyError:
         raise DonneeInvalideError("La colonne 'Legendary' est absente du jeu de données.")
     except ValueError:
