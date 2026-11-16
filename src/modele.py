@@ -97,7 +97,10 @@ class Modele:
                 "colonnes_numeriques": COLONNES_NUMERIQUES,
                 "colonnes_categorielles": COLONNES_CATEGORIELLES,
                 "valeurs_categorielles": {
-                    colonne: sorted(self.x[colonne].dropna().astype(str).unique().tolist())
+                    colonne: sorted(
+                        self.x[colonne].dropna().astype(str).unique().tolist(),
+                        key=lambda valeur: valeur.casefold(),
+                    )
                     for colonne in COLONNES_CATEGORIELLES},
                 "intervalles_numeriques": {
                     colonne: {"minimum": float(self.x[colonne].min()), "maximum": float(self.x[colonne].max())}
