@@ -1,14 +1,73 @@
 import os
-
+from abc import ABC, abstractmethod
 import pandas as pd
 
-from .exceptions import FichierIntrouvableError, DonneeInvalideError
+from .exceptions import FichierIntrouvableError, DonneeInvalideError, SaisieHorsIntervalleError
 
 COLONNES_CATEGORIELLES = ["Type 1", "Type 2"]
 COLONNES_NUMERIQUES = ["HP", "Attack", "Defense", "Sp. Atk","Sp. Def", "Speed", "Generation"]
 COLONNES_CARACTERISTIQUES = (COLONNES_CATEGORIELLES + COLONNES_NUMERIQUES)
 COLONNES_REQUISES = COLONNES_CARACTERISTIQUES + ["Legendary"]
 
+class Variable(ABC):
+    """Définit la validation commune aux variables du formulaire."""
+
+    def __init__(self, nom: str) -> None:
+        """Conserve le nom du champ pour les messages d'erreur."""
+        self._nom = nom
+
+    @abstractmethod
+    def valider(self, texte: str) -> int | str:
+        """Retourne la saisie convertie ou lève DonneeInvalideError."""
+        raise NotImplementedError
+
+
+class VariableNumerique(Variable):
+    """Valide un entier dans l'intervalle enregistré dans les métadonnées."""
+
+    def __init__(self, nom: str, minimum: int, maximum: int) -> None:
+        """Conserve le nom et les bornes du champ."""
+        super().__init__(nom)
+        self._minimum = minimum
+        self._maximum = maximum
+
+    def valider(self, texte: str) -> int:
+        """Retourne un entier ; refuse le vide, le texte et le hors-intervalle."""
+        try:
+            valeur = int(texte.strip())
+        except ValueError as erreur:
+            raise DonneeInvalideError(
+                f"{self._nom} : entrez un nombre entier."
+            ) from erreur
+
+        if not self._minimum <= valeur <= self._maximum:
+            raise SaisieHorsIntervalleError(
+                f"{self._nom} : entrez une valeur de "
+                f"{self._minimum} à {self._maximum}."
+            )
+
+        return valeur
+
+
+class VariableCategorielle(Variable):
+    """Valide un choix parmi les catégories enregistrées."""
+
+    def __init__(self, nom: str, choix: list[str]) -> None:
+        """Conserve le nom et une copie des choix autorisés."""
+        super().__init__(nom)
+        self._choix = choix.copy()
+
+    def valider(self, texte: str) -> str:
+        """Retourne un choix nettoyé ou lève DonneeInvalideError."""
+        valeur = texte.strip()
+
+        if valeur not in self._choix:
+            raise DonneeInvalideError(
+                f"{self._nom} : choisissez un type valide."
+            )
+
+        return valeur
+    
 class JeuDonnees:
     """Charge, nettoie et sépare les données du projet."""
     def __init__(self, fichier: str) -> None:

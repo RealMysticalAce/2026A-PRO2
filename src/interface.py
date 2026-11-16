@@ -2,6 +2,7 @@ import csv
 import os
 import sys
 from datetime import datetime
+from .donnees import VariableNumerique, VariableCategorielle
 
 import pandas as pd
 from PyQt6.QtWidgets import (
@@ -45,6 +46,7 @@ class Fenetre(QWidget):
         self.modele = modele
         self.metadonnees = metadonnees
         self.chemin_historique = chemin_historique
+        self._variables = {}
         self._types = {}
         self._nombres = {}
         vbox = QVBoxLayout(self)
@@ -82,6 +84,7 @@ class Fenetre(QWidget):
             liste.addItems(choix)
             liste.setCurrentIndex(0)
             self._types[nom] = liste
+            self._variables[nom] = VariableCategorielle(nom, choix)
             formulaire.addRow(nom, liste)
             
         for nom in metadonnees["colonnes_numeriques"]:
@@ -90,7 +93,8 @@ class Fenetre(QWidget):
             maximum = int(limites["maximum"])
             valeur_initiale = (minimum + maximum) // 2
             champ = QLineEdit(str(valeur_initiale))
-            self._nombres[nom] = (champ, minimum, maximum)
+            self._nombres[nom] = champ
+            self._variables[nom] = VariableNumerique(nom, minimum, maximum)
             formulaire.addRow(f"{nom} ({minimum} à {maximum})", champ)
         
         return formulaire
@@ -190,29 +194,23 @@ class Fenetre(QWidget):
             QMessageBox.warning(self, "Historique non enregistré", f"La prédiction est affichée, mais n'a pas été ajoutée à l'historique.\n{e}")
 
     def _valider(self) -> dict | None:
-        """Valide la saisie et retourne un dictionnaire des valeurs."""
+        """Retourne les saisies validées ; affiche l'erreur sinon."""
         valeurs = {}
-        
-        for nom, choix in self._types.items():
-            if not choix.currentText():
-                self.resultat.setText(f"{nom} : Veuillez choisir un type.")
-                return None
-            valeurs[nom] = choix.currentText()
 
-        for nom, (champ, minimum, maximum) in self._nombres.items():
+        for nom, variable in self._variables.items():
+            if nom in self._types:
+                champ = self._types[nom]
+                texte = champ.currentText()
+            else:
+                champ = self._nombres[nom]
+                texte = champ.text()
+
             try:
-                valeur = int(champ.text().strip())
-            except ValueError:
-                self.resultat.setText(f"{nom} : Veuillez entrer un nombre entier.")
+                valeurs[nom] = variable.valider(texte)
+            except DonneeInvalideError as erreur:
+                self.resultat.setText(str(erreur))
                 champ.setFocus()
                 return None
-
-            if not minimum <= valeur <= maximum:
-                self.resultat.setText(f"{nom} : Veuillez entrer une valeur de {minimum} à {maximum}.")
-                champ.setFocus()
-                return None
-
-            valeurs[nom] = valeur
 
         return valeurs
     
