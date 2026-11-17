@@ -94,8 +94,6 @@ def charger_donnees(fichier: str) -> pd.DataFrame:
         raise DonneeInvalideError("Le fichier CSV est mal formé ou contient des données invalides.")
     except pd.errors.EmptyDataError:
         raise DonneeInvalideError("Le fichier CSV est vide.")
-    except pd.errors.ParserError:
-        raise DonneeInvalideError("Le fichier CSV est mal formé.")
     except UnicodeDecodeError:
         raise DonneeInvalideError("Le fichier CSV n'utilise pas un encodage lisible.")
     except OSError as e:
