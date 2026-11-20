@@ -42,7 +42,7 @@ def main() -> int:
 
 def exploration() -> None:
     """Crée et enregistre le graphique exploratoire."""
-    jeu = JeuDonnees("donnees/pokemon.csv").donnees
+    jeu = JeuDonnees("donnees/Pokemon.csv").donnees
     plt.title("Nombre de Pokémon légendaires vs non légendaires")
     plt.xlabel("Légendaire")
     plt.ylabel("Nombre de Pokémon")
@@ -53,7 +53,7 @@ def exploration() -> None:
 
 def entrainement() -> None:
     """Entraîne, évalue et sauvegarde le modèle."""
-    jeu = JeuDonnees("donnees/pokemon.csv")
+    jeu = JeuDonnees("donnees/Pokemon.csv")
     modele = Modele(jeu.x, jeu.y)
     modele.entrainer()
     modele.evaluer()
