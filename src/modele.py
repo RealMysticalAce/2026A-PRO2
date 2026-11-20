@@ -51,7 +51,7 @@ class Modele:
             ("categories", OneHotEncoder(handle_unknown="ignore"), COLONNES_CATEGORIELLES)])
         
         # instructions d'entrainement et entrainement du modele
-        self.modele = Pipeline([("preparation", preparation), ("arbre", DecisionTreeClassifier(max_depth=5, class_weight="balanced", random_state=0))])
+        self.modele = Pipeline([("preparation", preparation), ("arbre", DecisionTreeClassifier(max_depth=9, class_weight="balanced", random_state=0))])
         self.modele.fit(self.x_train, self.y_train)
         print("Modèle entraîné avec succès.")
         print(f"Valeurs du modèle : {self.modele.named_steps['arbre'].classes_}")
