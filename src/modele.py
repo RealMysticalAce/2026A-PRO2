@@ -83,7 +83,7 @@ class Modele:
     def sauvegarder(self, dossier: str = "modeles") -> None:
         """Sauvegarde le modèle entraîné et les métadonnées."""
         if self.modele is None or self.f1_modele is None:
-            raise RuntimeError("Veuillez entraîner et évaluer le modèle avant de le sauvegarder.")
+            raise ModeleIndisponibleError("Veuillez entraîner et évaluer le modèle avant de le sauvegarder.")
 
         try:
             os.makedirs(dossier, exist_ok=True)

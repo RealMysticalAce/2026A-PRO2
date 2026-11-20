@@ -73,7 +73,7 @@ def test_sauvegarder_refuse_un_modele_non_entraine():
     x, y = donnees_pour_modele()
     modele = Modele(x, y)
 
-    with pytest.raises(RuntimeError):
+    with pytest.raises(ModeleIndisponibleError):
         modele.sauvegarder()
 
 

@@ -4,9 +4,6 @@ class FichierIntrouvableError(FileNotFoundError):
 class DonneeInvalideError(ValueError):
     """Une donnée du CSV ou une saisie ne respecte pas le format attendu."""
 
-class ColonneManquanteError(KeyError):
-    """Une colonne requise est absente du CSV ou des caractéristiques."""
-
 class SaisieHorsIntervalleError(DonneeInvalideError):
     """Une valeur numérique est hors de l'intervalle permis."""
 
