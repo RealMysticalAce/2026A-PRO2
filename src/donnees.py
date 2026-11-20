@@ -147,7 +147,7 @@ def nettoyer_donnees(donnees: pd.DataFrame) -> pd.DataFrame:
     
     return donnees
 
-def separer_donnees(donnees: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
+def separer_donnees(donnees: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series]:
     """Sépare les caractéristiques et la cible du jeu de données."""
     if donnees.empty:
         raise DonneeInvalideError("Le jeu de données est vide.")
