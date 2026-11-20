@@ -1,6 +1,7 @@
 import json
 import os
 import pandas as pd
+import numpy as np
 
 import joblib
 from sklearn.compose import ColumnTransformer
@@ -55,6 +56,33 @@ class Modele:
         print("Modèle entraîné avec succès.")
         print(f"Valeurs du modèle : {self.modele.named_steps['classifieur'].classes_}")
 
+    @staticmethod
+    def calculer_f1(y_reel: pd.Series, y_predit: np.ndarray) -> float:
+        """Retourne le F1 de la classe True à partir de booléens.
+
+        Lève DonneeInvalideError si les vecteurs sont vides, de dimensions
+        incorrectes ou de longueurs différentes.
+        """
+        reels = np.asarray(y_reel, dtype=bool)
+        predits = np.asarray(y_predit, dtype=bool)
+
+        if reels.ndim != 1 or reels.shape != predits.shape or reels.size == 0:
+            raise DonneeInvalideError(
+                "Deux vecteurs non vides de même longueur sont requis."
+            )
+
+        vrais_positifs = np.sum(reels & predits)
+        faux_positifs = np.sum(~reels & predits)
+        faux_negatifs = np.sum(reels & ~predits)
+
+        denominateur = 2 * vrais_positifs + faux_positifs + faux_negatifs
+
+        if denominateur == 0:
+            return 0.0
+
+        return float(2 * vrais_positifs / denominateur)
+
+
     def evaluer(self) -> float:
         """Évalue le modèle et calcule le F1 score."""
         if self.modele is None:
@@ -73,9 +101,12 @@ class Modele:
         except ValueError as e:
             raise DonneeInvalideError(f"Erreur lors de l'évaluation du modèle : {e}")
         
+        f1_numpy = self.calculer_f1(self.y_test, predictions)
+        
         print("Évaluation du modèle :")
         print(f"F1 référence : {self.f1_reference:.3f}")
         print(f"F1 du modèle : {self.f1_modele:.3f}")
+        print(f"F1 calculé par NumPY : {f1_numpy:.3f}")
         print(classification_report(self.y_test, predictions, labels=[False, True], target_names=["Non légendaire", "Légendaire"], zero_division=0))
 
         return self.f1_modele
