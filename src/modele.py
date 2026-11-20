@@ -9,15 +9,15 @@ from sklearn.impute import SimpleImputer
 from sklearn.metrics import classification_report, f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.linear_model import LogisticRegression
 
 from .exceptions import (DonneeInvalideError, ModeleIndisponibleError, SauvegardeModeleError)
 
 from .donnees import COLONNES_CATEGORIELLES, COLONNES_NUMERIQUES
 
 class Modele:
-    """Entraîne, évalue, sauvegarde et utilise l'arbre de décision."""
+    """Entraîne, évalue, sauvegarde et utilise le modèle de régression logistique."""
     def __init__(self, x: pd.DataFrame, y: pd.Series) -> None:
         """Vérifie les entrées et les conserve dans l'objet."""
         if x.empty or y.empty:
@@ -46,15 +46,14 @@ class Modele:
             raise DonneeInvalideError(f"Erreur lors de la séparation des données : {e}")
 
         # instructions de preparation
-        preparation = ColumnTransformer([
-            ("numeriques", SimpleImputer(strategy="median"), COLONNES_NUMERIQUES),
-            ("categories", OneHotEncoder(handle_unknown="ignore"), COLONNES_CATEGORIELLES)])
-        
-        # instructions d'entrainement et entrainement du modele
-        self.modele = Pipeline([("preparation", preparation), ("arbre", DecisionTreeClassifier(max_depth=9, class_weight="balanced", random_state=0))])
+        preparation_numerique = Pipeline([("imputation", SimpleImputer(strategy="median")), ("standardisation", StandardScaler())])
+        preparation = ColumnTransformer([("numeriques", preparation_numerique, COLONNES_NUMERIQUES), ("categories", OneHotEncoder(handle_unknown="ignore"), COLONNES_CATEGORIELLES)])
+
+        self.modele = Pipeline([("preparation", preparation), ("classifieur", LogisticRegression(class_weight="balanced", max_iter=1000, random_state=0))])  
         self.modele.fit(self.x_train, self.y_train)
+        
         print("Modèle entraîné avec succès.")
-        print(f"Valeurs du modèle : {self.modele.named_steps['arbre'].classes_}")
+        print(f"Valeurs du modèle : {self.modele.named_steps['classifieur'].classes_}")
 
     def evaluer(self) -> float:
         """Évalue le modèle et calcule le F1 score."""
