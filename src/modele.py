@@ -58,18 +58,12 @@ class Modele:
 
     @staticmethod
     def calculer_f1(y_reel: pd.Series, y_predit: np.ndarray) -> float:
-        """Retourne le F1 de la classe True à partir de booléens.
-
-        Lève DonneeInvalideError si les vecteurs sont vides, de dimensions
-        incorrectes ou de longueurs différentes.
-        """
+        """Calcule le F1 score avec la librairie NumPy."""
         reels = np.asarray(y_reel, dtype=bool)
         predits = np.asarray(y_predit, dtype=bool)
 
         if reels.ndim != 1 or reels.shape != predits.shape or reels.size == 0:
-            raise DonneeInvalideError(
-                "Deux vecteurs non vides de même longueur sont requis."
-            )
+            raise DonneeInvalideError("Deux vecteurs non vides de même longueur sont requis.")
 
         vrais_positifs = np.sum(reels & predits)
         faux_positifs = np.sum(~reels & predits)
@@ -81,7 +75,6 @@ class Modele:
             return 0.0
 
         return float(2 * vrais_positifs / denominateur)
-
 
     def evaluer(self) -> float:
         """Évalue le modèle et calcule le F1 score."""
